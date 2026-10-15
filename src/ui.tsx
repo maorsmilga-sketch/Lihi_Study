@@ -1,0 +1,9 @@
+import React,{useState,useEffect} from 'react';
+export function FileCard({children}:{children:React.ReactNode}){return <main style={{maxWidth:1040,margin:'auto',padding:24}}>{children}</main>}
+export function Header({title,intro}:{title:string;intro?:string}){return <header><h1>{title}</h1>{intro&&<p>{intro}</p>}</header>}
+export function Group({label,children}:{label:string;heading?:boolean;children:React.ReactNode}){return <section><h2>{label}</h2>{children}</section>}
+export function Closing({children}:{children:React.ReactNode}){return <footer style={{marginTop:32}}>{children}</footer>}
+export function useLocalState<T>(key:string,initial:T):[T,(x:T)=>void,{ready:boolean;message:string}]{const [value,setValue]=useState<T>(initial);const [ready,setReady]=useState(false);const [message,setMessage]=useState('Loading saved state');useEffect(()=>{try{const x=localStorage.getItem(key);if(x)setValue(JSON.parse(x));setMessage('Saved on this browser')}catch{setMessage('Not saved. Changes last only while this File is open.')}setReady(true)},[key]);return [value,(v:T)=>{setValue(v);try{localStorage.setItem(key,JSON.stringify(v));setMessage('Saved on this browser')}catch{setMessage('Not saved. Changes last only while this File is open.')}},{ready,message}]}
+export function Route(_:{path:string;element:React.ReactNode}){return null}
+export function Routes({children}:{children:React.ReactNode}){const [path,setPath]=useState(location.hash.slice(1)||'/');useEffect(()=>{const f=()=>setPath(location.hash.slice(1)||'/');addEventListener('hashchange',f);return()=>removeEventListener('hashchange',f)},[]);const a=React.Children.toArray(children) as React.ReactElement<{path:string;element:React.ReactNode}>[];return <>{(a.find(x=>x.props.path===path)||a.find(x=>x.props.path==='*'))?.props.element}</>}
+export function Link({to,children}:{to:string;children:React.ReactNode}){return <a href={'#'+to}>{children}</a>}
